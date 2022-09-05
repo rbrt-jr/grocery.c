@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1662380796 source:c:\users\rober\documents\cursosnet\grocery\main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<windows.h>
+

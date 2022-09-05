@@ -86,12 +86,14 @@ void insertNewProduct(){
     printf("Insert the name: \n");
     fgets(products[total_registered_products].name, 30, stdin);
     printf("Insert the price: \n");
-    scanf("%d", &products[total_registered_products].price);
+    scanf("%f", &products[total_registered_products].price);
 
-    printf("The product %s has been registered successfully\n", strtok(products[total_registered_products].name, "\n"));
+    printf("The product %s has been registered successfully\n\n", strtok(products[total_registered_products].name, "\n"));
 
     products[total_registered_products].code = (total_registered_products + 1);
     total_registered_products++;
+
+    menu();
 }
 void listOfProducts(){
     if(total_registered_products > 0){
@@ -102,8 +104,10 @@ void listOfProducts(){
             Sleep(1);
         }
     } else {
-        printf("The list is empty.\n");
+        printf("The list is empty.\n\n\n");
+        Sleep(3);
     }
+    menu();
 }
 void showCart(){
     if(total_products_cart > 0){
@@ -115,8 +119,9 @@ void showCart(){
             Sleep(1);
         }
     } else {
-        printf("The cart is empty.\n");
+        printf("The cart is empty\n\n");
     }
+    menu();
 }
 Product searchProductByCode(int code){
     Product prod;
@@ -126,6 +131,7 @@ Product searchProductByCode(int code){
         }
     }
     return prod;
+
 }
 int * productsInTheCart(int code){
     int static regress[] = {0, 0};
@@ -139,7 +145,62 @@ int * productsInTheCart(int code){
 }
 
 void buy(){
+    if(total_registered_products > 0){
+        printf("What is the code of product that you wish?\n");
+        printf("\t\tProduct available\n");
+        for(int i = 0; i < total_registered_products; i++){
+            infoProduct(products[i]);
+            printf("\n");
+            Sleep(1);
+        }
+        int code;
+        scanf("%d", &code);
+        getchar();
 
+        int validatedCode = 0;
+        for(int i = 0; i < total_registered_products; i++){
+            if(products[i].code == code){
+                validatedCode = 1;
+
+                if(total_products_cart > 0){
+                    int * recurrence = productsInTheCart(code);
+
+                    if(recurrence[0] == 1) {
+                        cart[recurrence[1]].quantity++;
+                        printf("Increased the quantity of product %s that already was in the cart\n",
+                                strtok(cart[recurrence[1]].product.name, "\n"));
+                                Sleep(3);
+                                menu();
+                    } else {
+                        Product p = searchProductByCode(code);
+                        cart[total_products_cart].product = p;
+                        cart[total_products_cart].quantity = 1;
+                        total_products_cart++;
+                        printf("The product %s was add at the cart\n", strtok(p.name, "\n"));
+                        Sleep(2);
+                        menu();
+                    }
+                } else {
+                    Product p = searchProductByCode(code);
+                    cart[total_products_cart].product = p;
+                    cart[total_products_cart].quantity = 1;
+                    total_products_cart++;
+                    printf("The product %s was add at the cart\n", strtok(p.name, "\n"));
+                    Sleep(2);
+                    menu();
+                }
+            }
+        }
+        if(validatedCode < 1){
+            printf("Not found the product with the code %d\n", code);
+            Sleep(3);
+            menu();
+        }
+    } else {
+        printf("Sorry! There are not products for selling\n\n");
+        Sleep(3);
+        menu();
+    }
 }
 
 void finishPurchase(){
@@ -161,7 +222,7 @@ void finishPurchase(){
         Sleep(5);
         menu();
     } else {
-        printf("The cart is empty.");
+        printf("The cart is empty\n\n");
         Sleep(3);
         menu();
     }
